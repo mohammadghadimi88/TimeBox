@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TimeBox - برنامه‌ریز تایم‌باکس</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    // ====== جایگزین کن با تنظیمات Firebase پروژه‌ات ======
+    window.__FIREBASE_CONFIG__ = {
+      apiKey: "PASTE_API_KEY_HERE",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+    // Google OAuth Client ID for Google API (for Calendar scopes)
+    window.__GOOGLE_CLIENT_ID__ = "PASTE_GOOGLE_OAUTH_CLIENT_ID_HERE";
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">TimeBox — برنامه‌ریز تایم‌باکس</div>
+      <div class="actions">
+        <select id="viewSelect" title="نمای">
+          <option value="day">روز</option>
+          <option value="week" selected>هفته</option>
+          <option value="month">ماه</option>
+          <option value="year">سال</option>
+        </select>
+        <button id="todayBtn" class="btn">امروز</button>
+        <span id="userLabel">حالت مهمان</span>
+        <button id="googleSignBtn" class="btn small">ورود با گوگل</button>
+        <button id="logoutBtn" class="btn small" style="display:none">خروج</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="left-panel card">
+        <section class="card-section">
+          <h3>تسک‌ها</h3>
+          <div class="task-input">
+            <input id="newTaskInput" placeholder="یک تسک جدید..." />
+            <button id="addTaskBtn" class="btn">افزودن</button>
+          </div>
+          <div id="tasksList" class="tasks"></div>
+          <div class="task-actions">
+            <button id="clearDone" class="btn outline">حذف انجام‌شده‌ها</button>
+            <button id="clearAll" class="btn outline">حذف همه</button>
+          </div>
+        </section>
+
+        <section class="card-section">
+          <h3>افزودن بلوک زمانی</h3>
+          <label>عنوان: <input id="boxTitle" /></label>
+          <label>مدت (دقیقه): <input id="boxDuration" type="number" value="25" min="1" /></label>
+          <label>نوع:
+            <select id="boxType">
+              <option value="focus">فوکوس</option>
+              <option value="meeting">جلسه</option>
+              <option value="break">استراحت</option>
+              <option value="other">سایر</option>
+            </select>
+          </label>
+          <button id="createBoxBtn" class="btn">افزودن به امروز</button>
+          <button id="syncCalendarBtn" class="btn outline">همگام‌سازی با تقویم گوگل</button>
+        </section>
+
+        <section class="card-section">
+          <h3>تنظیمات</h3>
+          <label>فوکوس پیشفرض (دقیقه): <input id="defFocus" type="number" value="25" min="1" /></label>
+          <label>استراحت کوتاه (دقیقه): <input id="defShort" type="number" value="5" min="1" /></label>
+          <label>استراحت بلند (دقیقه): <input id="defLong" type="number" value="15" min="1" /></label>
+          <button id="saveSettings" class="btn">ذخیره</button>
+        </section>
+
+      </aside>
+
+      <section class="center-panel card">
+        <div class="toolbar">
+          <button id="prevBtn" class="btn outline">قبلی</button>
+          <button id="nextBtn" class="btn outline">بعدی</button>
+          <div id="rangeLabel" class="range-label">هفته جاری</div>
+        </div>
+        <div id="calendarView" class="calendar-view">
+          <!-- dynamic rendering -->
+        </div>
+      </section>
+
+      <aside class="right-panel card">
+        <h3>تایمر بلوک</h3>
+        <div id="timerDisplay" class="timer">00:00</div>
+        <div id="timerStatus" class="meta">آماده</div>
+        <div class="controls">
+          <button id="startTimerBtn" class="btn">شروع</button>
+          <button id="stopTimerBtn" class="btn outline">توقف</button>
+          <button id="completeBoxBtn" class="btn">علامت‌گذاری انجام‌شده</button>
+        </div>
+
+        <h4>جزئیات انتخاب</h4>
+        <div id="selectedDetails" class="details">هیچ بلوکی انتخاب نشده</div>
+
+        <hr/>
+        <h4>گزارش سریع</h4>
+        <div id="reportSummary"></div>
+        <button id="exportBtn" class="btn outline">خروجی JSON</button>
+      </aside>
+    </main>
+
+    <audio id="dingSound" src="ding-placeholder.txt" preload="auto"></audio>
+  </div>
+
+  <!-- FontAwesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+  <!-- App -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

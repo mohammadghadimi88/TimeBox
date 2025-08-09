@@ -1,0 +1,45 @@
+:root{
+  --primary:#3b82f6;
+  --accent:#ff5c8a;
+  --muted:#6b7280;
+  --card:#ffffff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Vazir,Arial,sans-serif;background:linear-gradient(180deg,#f8fafc,#eef2ff);direction:rtl;color:#111}
+.app{max-width:1200px;margin:12px auto;padding:8px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px}
+.brand{font-weight:700;color:var(--primary)}
+.actions{display:flex;align-items:center;gap:8px}
+.btn{background:var(--primary);color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer}
+.btn.small{padding:6px 8px;font-size:0.9rem}
+.btn.outline{background:transparent;border:1px solid var(--primary);color:var(--primary)}
+.main{display:flex;gap:12px}
+.left-panel{width:300px}
+.right-panel{width:300px}
+.center-panel{flex:1;min-height:520px}
+.card{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+.card-section{margin-bottom:12px}
+.task-input{display:flex;gap:8px;margin-bottom:10px}
+.task-input input{flex:1;padding:8px;border-radius:6px;border:1px solid #e5e7eb}
+.tasks{max-height:260px;overflow:auto}
+.task{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:6px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa}
+.task .title{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task.done .title{text-decoration:line-through;color:#9ca3af}
+.range-label{text-align:center;font-weight:600;color:var(--muted)}
+.calendar-view{margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid #eef2ff}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.day-column{min-height:360px;border-left:1px solid #f1f5f9;padding:8px;background:#fff}
+.day-column .date{font-weight:600;margin-bottom:6px}
+.timebox{background:linear-gradient(90deg,#efefef,#fff);border-radius:6px;padding:6px;margin-bottom:6px;border-left:6px solid var(--primary);cursor:pointer}
+.timebox.meeting{border-left-color:#f59e0b}
+.timebox.break{border-left-color:#10b981}
+.timebox.other{border-left-color:#6b7280}
+.timer{font-size:2.2rem;text-align:center;margin:6px 0}
+.meta{text-align:center;color:var(--muted)}
+.controls{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.details{background:#fbfbff;padding:8px;border-radius:6px}
+@media (max-width:1000px){
+  .main{flex-direction:column}
+  .left-panel,.right-panel{width:100%}
+  .center-panel{order:2}
+}
