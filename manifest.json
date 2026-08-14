@@ -1,8 +1,0 @@
-{
-  "name": "TimeBox",
-  "short_name": "TimeBox",
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#3b82f6",
-  "background_color": "#ffffff"
-}
