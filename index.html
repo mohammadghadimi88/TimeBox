@@ -1,137 +1,638 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" class="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TimeBox - برنامه‌ریز تایم‌باکس</title>
-  <link rel="stylesheet" href="style.css" />
-  <script>
-    // ====== جایگزین کن با تنظیمات Firebase پروژه‌ات ======
-  // Import the functions you need from the SDKs you need
-    npm install firebase
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIMEBOX - Minimal Productivity</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: #475569;
+            --success: #10b981;
+            --font-family: 'Vazirmatn', 'Inter', sans-serif;
+        }
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        html.light {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --border: #e2e8f0;
+            --success: #059669;
+        }
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyD7bCoaqknfew4AH-YxixY8KjDCJyduq_M",
-  authDomain: "timebox-v01.firebaseapp.com",
-  projectId: "timebox-v01",
-  storageBucket: "timebox-v01.firebasestorage.app",
-  messagingSenderId: "9836342453",
-  appId: "1:9836342453:web:ec848705c9b421b639a2fc",
-  measurementId: "G-FSYZF6L364"
-};
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-    };
-    // Google OAuth Client ID for Google API (for Calendar scopes)
-    window.__GOOGLE_CLIENT_ID__ = "705167770310-9g5858me113uqgrolia4d8d3p53op5eo.apps.googleusercontent.com";
-  </script>
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+
+        /* Top Header */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        select, button {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        button.btn-primary {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            font-weight: 500;
+        }
+
+        button.btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Container */
+        main {
+            max-width: 900px;
+            width: 100%;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Focus / Pomodoro Section */
+        .pomodoro-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 1rem 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .timer-controls button {
+            padding: 0.6rem 1.8rem;
+            font-size: 1rem;
+        }
+
+        /* Grid Layouts for Daily 24h */
+        .time-slot-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .time-slot {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+        }
+
+        .time-label {
+            width: 60px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .time-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            padding: 0.4rem;
+        }
+
+        .time-input:focus {
+            background-color: var(--bg-card);
+            border-radius: 6px;
+        }
+
+        /* Cards Grid for Weekly / Monthly / Yearly */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .card-header {
+            font-weight: 700;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            resize: none;
+            outline: none;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Bottom Fixed Navigation Footer */
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            width: 20%;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            font-weight: 700;
+            background-color: var(--bg-card);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Donation Box */
+        .donation-banner {
+            background-color: var(--bg-secondary);
+            border: 1px dashed var(--accent);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* Responsive UI tweaks */
+        @media (max-width: 600px) {
+            .timer-display { font-size: 3.5rem; }
+            .nav-item { padding: 0.2rem; }
+        }
+    </style>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand">TimeBox — برنامه‌ریز تایم‌باکس</div>
-      <div class="actions">
-        <select id="viewSelect" title="نمای">
-          <option value="day">روز</option>
-          <option value="week" selected>هفته</option>
-          <option value="month">ماه</option>
-          <option value="year">سال</option>
-        </select>
-        <button id="todayBtn" class="btn">امروز</button>
-        <span id="userLabel">حالت مهمان</span>
-        <button id="googleSignBtn" class="btn small">ورود با گوگل</button>
-        <button id="logoutBtn" class="btn small" style="display:none">خروج</button>
-      </div>
+
+    <!-- Header Controls -->
+    <header>
+        <div class="logo">
+            <span>⏱️</span>
+            <span>TIMEBOX</span>
+        </div>
+        <div class="header-controls">
+            <!-- Language Selector -->
+            <select id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="fa">فارسی</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="ar">العربية</option>
+                <option value="zh">中文</option>
+                <option value="tr">Türkçe</option>
+            </select>
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" id="themeBtn">🌙</button>
+        </div>
     </header>
 
-    <main class="main">
-      <aside class="left-panel card">
-        <section class="card-section">
-          <h3>تسک‌ها</h3>
-          <div class="task-input">
-            <input id="newTaskInput" placeholder="یک تسک جدید..." />
-            <button id="addTaskBtn" class="btn">افزودن</button>
-          </div>
-          <div id="tasksList" class="tasks"></div>
-          <div class="task-actions">
-            <button id="clearDone" class="btn outline">حذف انجام‌شده‌ها</button>
-            <button id="clearAll" class="btn outline">حذف همه</button>
-          </div>
+    <!-- Main Views -->
+    <main>
+        <!-- FOCUS / POMODORO VIEW -->
+        <section id="focus" class="tab-content active">
+            <div class="pomodoro-card">
+                <h2 data-i18n="focusTitle">تمرکز و پومودورو</h2>
+                <div class="timer-display" id="timer">25:00</div>
+                <div class="timer-controls">
+                    <button class="btn-primary" id="startBtn" onclick="toggleTimer()" data-i18n="start">شروع</button>
+                    <button onclick="resetTimer()" data-i18n="reset">بازنشانی</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" data-i18n="topPriorities">اولویت‌های اصلی تمرکز</div>
+                <textarea id="focus-notes" placeholder="..." oninput="saveData()"></textarea>
+            </div>
         </section>
 
-        <section class="card-section">
-          <h3>افزودن بلوک زمانی</h3>
-          <label>عنوان: <input id="boxTitle" /></label>
-          <label>مدت (دقیقه): <input id="boxDuration" type="number" value="25" min="1" /></label>
-          <label>نوع:
-            <select id="boxType">
-              <option value="focus">فوکوس</option>
-              <option value="meeting">جلسه</option>
-              <option value="break">استراحت</option>
-              <option value="other">سایر</option>
-            </select>
-          </label>
-          <button id="createBoxBtn" class="btn">افزودن به امروز</button>
-          <button id="syncCalendarBtn" class="btn outline">همگام‌سازی با تقویم گوگل</button>
+        <!-- DAILY 24H VIEW -->
+        <section id="daily" class="tab-content">
+            <h2 style="margin-bottom: 1rem;" data-i18n="dailyTitle">برنامه‌ریزی ۲۴ ساعته</h2>
+            <div class="time-slot-grid" id="dailyGrid"></div>
         </section>
 
-        <section class="card-section">
-          <h3>تنظیمات</h3>
-          <label>فوکوس پیشفرض (دقیقه): <input id="defFocus" type="number" value="25" min="1" /></label>
-          <label>استراحت کوتاه (دقیقه): <input id="defShort" type="number" value="5" min="1" /></label>
-          <label>استراحت بلند (دقیقه): <input id="defLong" type="number" value="15" min="1" /></label>
-          <button id="saveSettings" class="btn">ذخیره</button>
+        <!-- WEEKLY VIEW -->
+        <section id="weekly" class="tab-content">
+            <h2 style="margin-bottom: 1rem;" data-i18n="weeklyTitle">برنامه هفتگی</h2>
+            <div class="grid-cards" id="weeklyGrid"></div>
         </section>
 
-      </aside>
+        <!-- MONTHLY VIEW -->
+        <section id="monthly" class="tab-content">
+            <h2 style="margin-bottom: 1rem;" data-i18n="monthlyTitle">برنامه ماهانه</h2>
+            <div class="grid-cards" id="monthlyGrid"></div>
+        </section>
 
-      <section class="center-panel card">
-        <div class="toolbar">
-          <button id="prevBtn" class="btn outline">قبلی</button>
-          <button id="nextBtn" class="btn outline">بعدی</button>
-          <div id="rangeLabel" class="range-label">هفته جاری</div>
+        <!-- YEARLY VIEW -->
+        <section id="yearly" class="tab-content">
+            <h2 style="margin-bottom: 1rem;" data-i18n="yearlyTitle">اهداف سالانه</h2>
+            <div class="grid-cards" id="yearlyGrid"></div>
+        </section>
+
+        <!-- Donation Banner -->
+        <div class="donation-banner">
+            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;" data-i18n="donateText">اگر این ابزار به بهره‌وری شما کمک کرد، می‌توانید از ما حمایت کنید ❤️</p>
+            <a href="https://coffeete.ir/mohammadghadimi" target="_blank" style="text-decoration: none;">
+                <button class="btn-primary" data-i18n="donateBtn">حمایت مالی</button>
+            </a>
         </div>
-        <div id="calendarView" class="calendar-view">
-          <!-- dynamic rendering -->
-        </div>
-      </section>
-
-      <aside class="right-panel card">
-        <h3>تایمر بلوک</h3>
-        <div id="timerDisplay" class="timer">00:00</div>
-        <div id="timerStatus" class="meta">آماده</div>
-        <div class="controls">
-          <button id="startTimerBtn" class="btn">شروع</button>
-          <button id="stopTimerBtn" class="btn outline">توقف</button>
-          <button id="completeBoxBtn" class="btn">علامت‌گذاری انجام‌شده</button>
-        </div>
-
-        <h4>جزئیات انتخاب</h4>
-        <div id="selectedDetails" class="details">هیچ بلوکی انتخاب نشده</div>
-
-        <hr/>
-        <h4>گزارش سریع</h4>
-        <div id="reportSummary"></div>
-        <button id="exportBtn" class="btn outline">خروجی JSON</button>
-      </aside>
     </main>
 
-    <audio id="dingSound" src="ding-placeholder.txt" preload="auto"></audio>
-  </div>
+    <!-- Fixed Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('focus', this)">
+            <span class="nav-icon">🎯</span>
+            <span data-i18n="navFocus">تمرکز</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('daily', this)">
+            <span class="nav-icon">☀️</span>
+            <span data-i18n="navDaily">روزانه</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('weekly', this)">
+            <span class="nav-icon">📅</span>
+            <span data-i18n="navWeekly">هفتگی</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('monthly', this)">
+            <span class="nav-icon">🗓️</span>
+            <span data-i18n="navMonthly">ماهانه</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('yearly', this)">
+            <span class="nav-icon">🚀</span>
+            <span data-i18n="navYearly">سالانه</span>
+        </button>
+    </nav>
 
-  <!-- FontAwesome -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <!-- Pure JS Application Logic -->
+    <script>
+        // Language Translations Object
+        const translations = {
+            fa: {
+                focusTitle: "تمرکز و پومودورو", start: "شروع", pause: "توقف", reset: "بازنشانی",
+                topPriorities: "اولویت‌های اصلی تمرکز", dailyTitle: "برنامه‌ریزی ۲۴ ساعته",
+                weeklyTitle: "برنامه هفتگی", monthlyTitle: "برنامه ماهانه", yearlyTitle: "اهداف سالانه",
+                donateText: "اگر این ابزار به بهره‌وری شما کمک کرد، می‌توانید از ما حمایت کنید ❤️",
+                donateBtn: "حمایت مالی", navFocus: "تمرکز", navDaily: "روزانه", navWeekly: "هفتگی",
+                navMonthly: "ماهانه", navYearly: "سالانه",
+                days: ["شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه"],
+                months: ["فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"]
+            },
+            en: {
+                focusTitle: "Focus & Pomodoro", start: "Start", pause: "Pause", reset: "Reset",
+                topPriorities: "Top Focus Priorities", dailyTitle: "24-Hour Timeboxing",
+                weeklyTitle: "Weekly Planner", monthlyTitle: "Monthly Planner", yearlyTitle: "Yearly Roadmap",
+                donateText: "If this tool helped your productivity, feel free to support us ❤️",
+                donateBtn: "Donate", navFocus: "Focus", navDaily: "Daily", navWeekly: "Weekly",
+                navMonthly: "Monthly", navYearly: "Yearly",
+                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            },
+            es: {
+                focusTitle: "Enfoque y Pomodoro", start: "Iniciar", pause: "Pausa", reset: "Reiniciar",
+                topPriorities: "Prioridades principales", dailyTitle: "Planificador de 24 Horas",
+                weeklyTitle: "Plan semanal", monthlyTitle: "Plan mensual", yearlyTitle: "Plan anual",
+                donateText: "Si esta herramienta te sirvió, puedes apoyarnos ❤️",
+                donateBtn: "Donar", navFocus: "Enfoque", navDaily: "Diario", navWeekly: "Semanal",
+                navMonthly: "Mensual", navYearly: "Anual",
+                days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+                months: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+            },
+            fr: {
+                focusTitle: "Focus & Pomodoro", start: "Démarrer", pause: "Pause", reset: "Réinitialiser",
+                topPriorities: "Priorités principales", dailyTitle: "Planning 24h",
+                weeklyTitle: "Plan hebdomadaire", monthlyTitle: "Plan mensuel", yearlyTitle: "Objectifs annuels",
+                donateText: "Si cet outil vous a aidé, soutenez-nous ❤️",
+                donateBtn: "Faire un don", navFocus: "Focus", navDaily: "Jour", navWeekly: "Semaine",
+                navMonthly: "Mois", navYearly: "Année",
+                days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+                months: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"]
+            },
+            de: {
+                focusTitle: "Fokus & Pomodoro", start: "Start", pause: "Pause", reset: "Zurücksetzen",
+                topPriorities: "Hauptprioritäten", dailyTitle: "24-Stunden-Planer",
+                weeklyTitle: "Wochenplan", monthlyTitle: "Monatsplan", yearlyTitle: "Jahresziele",
+                donateText: "Wenn dieses Tool geholfen hat, unterstütze uns ❤️",
+                donateBtn: "Spenden", navFocus: "Fokus", navDaily: "Tag", navWeekly: "Woche",
+                navMonthly: "Monat", navYearly: "Jahr",
+                days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
+                months: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+            },
+            ar: {
+                focusTitle: "التركيز وبومودورو", start: "بدء", pause: "إيقاف", reset: "إعادة ضبط",
+                topPriorities: "أولويات التركيز", dailyTitle: "تخطيط 24 ساعة",
+                weeklyTitle: "الخطة الأسبوعية", monthlyTitle: "الخطة الشهرية", yearlyTitle: "الأهداف السنوية",
+                donateText: "إذا ساعدتك هذه الأداة، يمكنك دعمنا ❤️",
+                donateBtn: "تبرع", navFocus: "التركيز", navDaily: "يومي", navWeekly: "أسبوعي",
+                navMonthly: "شهري", navYearly: "سنوي",
+                days: ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"],
+                months: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+            },
+            zh: {
+                focusTitle: "专注与番茄钟", start: "开始", pause: "暂停", reset: "重置",
+                topPriorities: "核心任务", dailyTitle: "24小时计划",
+                weeklyTitle: "周计划", monthlyTitle: "月计划", yearlyTitle: "年度目标",
+                donateText: "如果这个工具有所帮助，欢迎支持我们 ❤️",
+                donateBtn: "赞赏", navFocus: "专注", navDaily: "日计划", navWeekly: "周计划",
+                navMonthly: "月计划", navYearly: "年计划",
+                days: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+                months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一", "十二"]
+            },
+            tr: {
+                focusTitle: "Odaklanma & Pomodoro", start: "Başlat", pause: "Duraklat", reset: "Sıfırla",
+                topPriorities: "Ana Öncelikler", dailyTitle: "24 Saatlik Planlayıcı",
+                weeklyTitle: "Haftalık Plan", monthlyTitle: "Aylık Plan", yearlyTitle: "Yıllık Hedefler",
+                donateText: "Bu araç size yardımcı olduysa destek olabilirsiniz ❤️",
+                donateBtn: "Bağış Yap", navFocus: "Odak", navDaily: "Günlük", navWeekly: "Haftalık",
+                navMonthly: "Aylık", navYearly: "Yıllık",
+                days: ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"],
+                months: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+            }
+        };
 
-  <!-- App -->
-  <script type="module" src="app.js"></script>
+        let currentLang = 'fa';
+
+        // Tab Navigation Switcher
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Theme Toggle (Dark / Light)
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeBtn');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                btn.textContent = '☀️';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                btn.textContent = '🌙';
+            }
+        }
+
+        // Generate Grids (Daily 24h, Weekly, Monthly, Yearly)
+        function renderGrids() {
+            // Daily 24 Hours
+            const dailyGrid = document.getElementById('dailyGrid');
+            dailyGrid.innerHTML = '';
+            for (let i = 0; i < 24; i++) {
+                const hourStr = `${i.toString().padStart(2, '0')}:00`;
+                dailyGrid.innerHTML += `
+                    <div class="time-slot">
+                        <span class="time-label">${hourStr}</span>
+                        <input type="text" class="time-input" id="daily-${i}" placeholder="..." oninput="saveData()">
+                    </div>
+                `;
+            }
+
+            // Weekly
+            const weeklyGrid = document.getElementById('weeklyGrid');
+            weeklyGrid.innerHTML = '';
+            translations[currentLang].days.forEach((day, index) => {
+                weeklyGrid.innerHTML += `
+                    <div class="card">
+                        <div class="card-header">${day}</div>
+                        <textarea id="weekly-${index}" placeholder="..." oninput="saveData()"></textarea>
+                    </div>
+                `;
+            });
+
+            // Monthly (4 Weeks / Milestones)
+            const monthlyGrid = document.getElementById('monthlyGrid');
+            monthlyGrid.innerHTML = '';
+            for (let i = 1; i <= 4; i++) {
+                monthlyGrid.innerHTML += `
+                    <div class="card">
+                        <div class="card-header">Week ${i}</div>
+                        <textarea id="monthly-${i}" placeholder="..." oninput="saveData()"></textarea>
+                    </div>
+                `;
+            }
+
+            // Yearly (12 Months)
+            const yearlyGrid = document.getElementById('yearlyGrid');
+            yearlyGrid.innerHTML = '';
+            translations[currentLang].months.forEach((month, index) => {
+                yearlyGrid.innerHTML += `
+                    <div class="card">
+                        <div class="card-header">${month}</div>
+                        <textarea id="yearly-${index}" placeholder="..." oninput="saveData()"></textarea>
+                    </div>
+                `;
+            });
+
+            loadData();
+        }
+
+        // Language Switching
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'fa' || lang === 'ar') ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            renderGrids();
+        }
+
+        // Pomodoro Timer Logic
+        let timerInterval = null;
+        let timeLeft = 25 * 60;
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const seconds = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function toggleTimer() {
+            const startBtn = document.getElementById('startBtn');
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                startBtn.textContent = translations[currentLang].start;
+            } else {
+                isRunning = true;
+                startBtn.textContent = translations[currentLang].pause;
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        alert('Pomodoro session completed!');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+            document.getElementById('startBtn').textContent = translations[currentLang].start;
+        }
+
+        // LocalStorage Data Persistence
+        function saveData() {
+            const data = {};
+            document.querySelectorAll('input, textarea').forEach(el => {
+                if (el.id) data[el.id] = el.value;
+            });
+            localStorage.setItem('timebox_data', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('timebox_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = data[id];
+                });
+            }
+        }
+
+        // Initializing Application
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGrids();
+        });
+    </script>
 </body>
 </html>
